@@ -8,6 +8,7 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var pg = require('pg');
 var routes = require('./routes');
+var models = require('./models');
 
 
 app.set('view', __dirname + '/views');
@@ -22,4 +23,15 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, '/public')));
 
-app.listen(1337);
+models.User.sync({})
+  .then(function() {
+    return models.Page.sync({})
+  })
+  .then(function() {
+    app.listen(3001, function() {
+      console.log('Server is listening on port 3001!');
+    })
+  })
+  .catch(console.error);
+
+// app.listen(1337);
