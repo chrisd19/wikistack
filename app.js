@@ -7,11 +7,13 @@ var swig = require('swig');
 var path = require('path');
 var bodyParser = require('body-parser');
 var pg = require('pg');
-var routes = require('./routes');
+
+var wikiRoutes = require('./routes/wiki.js');
+var usersRoutes = require('./routes/users');
 var models = require('./models');
 
 
-app.set('view', __dirname + '/views');
+app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
 app.engine('html', swig.renderFile);
 swig.setDefaults({cache: false});
@@ -23,9 +25,13 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, '/public')));
 
-models.User.sync({})
+app.use('/wiki', wikiRoutes);
+
+app.use('/users', usersRoutes);
+
+models.User.sync()
   .then(function() {
-    return models.Page.sync({})
+    return models.Page.sync()
   })
   .then(function() {
     app.listen(3001, function() {

@@ -1,8 +1,10 @@
 {% extends "layout.html" %}
 
 {% block content %}
-  <h3>Pages</h3>
+  <h3>Pages by {{user.name}}</h3>
   <hr>
+  <h4>Name: {{user.name}}</h4>
+  <h4>Email: {{user.email}}</h4>
   <ul class="list-unstyled">
     <!-- PLACEHOLDER LIST OF PAGES -->
     {% for page in pages %}

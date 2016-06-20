@@ -13,19 +13,51 @@ router.get('/', function(req, res, next) {
 
 router.post('/', function(req, res, next) {
 
-  var page = Page.build({
-    title: req.body.title,
-    content: req.body.content,
-    status: req.body.status
-  });
+  User.findOrCreate({
+    where: {
+      name: req.body.name,
+      email: req.body.email
+    }
+  })
+  .then(function(result) {
+    var user = result[0];
 
-  page.save().then(function(savedPage) {
-    res.redirect(savedPage.route);
-  }).catch(next);
+    var page = Page.build({
+      title: req.body.title,
+      content: req.body.content,
+      status: req.body.status,
+      tags: req.body.tags.split(' ')
+    });
+
+    return page.save().then(function(page) {
+      return page.setAuthor(user);
+    });
+  })
+  .then(function(page) {
+    res.redirect(page.route);
+  })
+  .catch(next);
+
 });
 
 router.get('/add', function(req, res, next) {
   res.render('addpage');
+});
+
+router.get('/search', function(req, res, next) {
+  if (req.query.tag) {
+    Page.find( {
+      where: {
+        tags: {
+          $overlap: req.query.tag.split(" ")
+        }
+      }
+    }).then(function(pages) {
+      res.render("index", {pages: pages});
+    })
+  } else {
+    res.render("search");
+  }
 });
 
 router.get('/:urlTitle', function(req, res, next) {
@@ -34,8 +66,11 @@ router.get('/:urlTitle', function(req, res, next) {
       urlTitle: req.params.urlTitle
     }
   }).then(function(foundPage) {
-    res.render("wikipage", {page: foundPage});
+    foundPage.getAuthor().then(function(user) {
+      res.render("wikipage", {user: user, page: foundPage});
+    })
   }).catch(next);
+
 });
 
 
