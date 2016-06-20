@@ -4,8 +4,22 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon -e html,js,css ./app.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "morgan": "^1.7.0",
+    "path": "^0.12.7",
+    "pg": "^5.1.0",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^3.23.3",
+    "swig": "^1.4.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.9.2"
+  }
 }
