@@ -46,13 +46,14 @@ router.get('/add', function(req, res, next) {
 
 router.get('/search', function(req, res, next) {
   if (req.query.tag) {
-    Page.find( {
+    Page.findAll( {
       where: {
         tags: {
           $overlap: req.query.tag.split(" ")
         }
       }
     }).then(function(pages) {
+      console.log(pages);
       res.render("index", {pages: pages});
     })
   } else {
